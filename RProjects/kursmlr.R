@@ -1,10 +1,10 @@
 library(tidyverse)
 library(data.table)
 library(readr)
-library(mlr3)
+library(mlr)
 
-winequality_red <- read.csv("wine+quality/winequality-red.csv", sep=';')
-winequality_white <- read.csv("wine+quality/winequality-white.csv", sep=';')
+winequality_red <- read.csv("machine-learning/RProjects/winequality-red.csv", sep=';')
+winequality_white <- read.csv("machine-learning/RProjects/winequality-white.csv", sep=';')
 
 winequality_red$type <- 'red'
 winequality_white$type <- 'white'
