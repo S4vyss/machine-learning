@@ -3,8 +3,8 @@ library(data.table)
 library(readr)
 library(mlr)
 
-winequality_red <- read.csv("machine-learning/RProjects/winequality-red.csv", sep=';')
-winequality_white <- read.csv("machine-learning/RProjects/winequality-white.csv", sep=';')
+winequality_red <- read.csv("C:/RProjects/project/machine-learning/RProjects/winequality-red.csv", sep = ';')
+winequality_white <- read.csv("C:/RProjects/project/machine-learning/RProjects/winequality-white.csv", sep=';')
 
 winequality_red$type <- 'red'
 winequality_white$type <- 'white'
