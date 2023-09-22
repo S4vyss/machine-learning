@@ -50,3 +50,49 @@ wine <- normalizeFeatures(wine, target = "quality")
 mlr::summarizeColumns(wine)
 
 wine$quality <- as.numeric(wine$quality)
+
+wine_task <- makeRegrTask(id = 'wine', data = wine, target = 'quality', fixup.data = 'no', check.data = FALSE)
+
+head(getTaskData(wine_task))
+
+wine_subset <- subsetTask(wine_task, wine$quality > 7, c('alcohol', 'sulphates'))
+
+tibble::as.tibble(mlr::listLearners(obj = 'regr'))
+
+rf_model <- train('regr.randomForest', wine_task)
+
+unwraped_model <- getLearnerModel(rf_model)
+
+wine_lm <- lm(quality ~., data = wine)
+summary(wine_lm)
+
+library(party)
+wine_tree <- ctree(quality ~., data = wine)
+plot(wine_tree)
+
+library(randomForest)
+wine_rf <- randomForest(quality ~., data = wine)
+
+fitted <- predict(rf_model, wine_task)
+fitted
+
+performance(fitted)
+
+mean((fitted[['data']]$response - fitted[['data']]$truth)^2)
+
+listMeasures(wine_task)
+
+training_set <- sample(1:nrow(wine), floor(0.8*nrow(wine)))
+test <- setdiff(1:nrow(wine), training_set)
+wine_task_training <- subsetTask(wine_task, training_set)
+wine_task_training
+
+wine_rf_training <- train('regr.randomForest', wine_task_training)
+performance(predict(wine_rf_training, wine_task_training))
+performance(predict(wine_rf_training, newdata = wine[test, ]))
+
+wine_benchmark <- benchmark(makeLearners(c('lm', 'randomForest', 'svm'), type = 'regr'), resamplings = cv10, wine_task)
+wine_benchmark
+
+plotBMRSummary(wine_benchmark)
+plotBMRBoxplots(wine_benchmark)
