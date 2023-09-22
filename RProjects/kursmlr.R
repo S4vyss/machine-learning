@@ -96,3 +96,41 @@ wine_benchmark
 
 plotBMRSummary(wine_benchmark)
 plotBMRBoxplots(wine_benchmark)
+
+getParamSet('regr.randomForest')
+
+rf <- makeLearner('regr.randomForest')
+
+rf_params <- makeParamSet(
+  makeDiscreteParam('mtry', values = 1:11),
+  makeDiscreteParam('ntree', values = seq(500, 2000, 250))
+)
+
+rf_tuned_params <- tuneParams(rf, resampling = cv3, task = wine_task, par.set = rf_params, control = makeTuneControlRandom(maxit = 50))
+
+rf_tuned_params
+
+rf_tuned_data <- generateHyperParsEffectData(rf_tuned_params)
+plotHyperParsEffect(rf_tuned_data, x = 'mtry', y = 'ntree', z = 'mse.test.mean', plot.type = 'heatmap')
+
+rf <- setHyperPars(rf, par.vals = rf_tuned_params$x)
+
+model_final <- train(rf, wine_task)
+
+final_fit <- predict(model_final, wine_task)
+final_fit
+
+performance(final_fit)
+
+library(parallelMap)
+
+# parallelStartSocket/parallelStop to use more cpu cores
+
+plotResiduals(predict(model_final, wine_task))
+
+plotResiduals(predict(model_final, wine_task), type = 'hist')
+
+
+wine_pdp <- generatePartialDependenceData(model_final, wine_task)
+
+plotPartialDependence(wine_pdp)
