@@ -8,9 +8,9 @@ murders %>%
   geom_label()
 
 
-a <- 1
-b <- 1
-c <- -1
+a <- 2
+b <- -1
+c <- -4
 
 (-b + sqrt(b^2 - 4*a*c)) / (2 * a)
 (-b - sqrt(b^2 - 4*a*c)) / (2 * a)
@@ -18,3 +18,9 @@ c <- -1
 head(murders)
 
 class(murders$region)
+
+data("movielens")
+
+dim(movielens)
+
+nlevels(movielens$genres)
